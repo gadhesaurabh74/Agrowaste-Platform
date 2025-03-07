@@ -4,7 +4,8 @@ const Notification = require("../models/Notification");
 
 exports.createOffer = async (req, res) => {
   try {
-    const listing = await Listing.findById(req.body.listing._id);
+    const listing = await Listing.findById(req.body.listing);
+    console.log("create offer: ",{...req.body});
     if (!listing) return res.status(404).json({ message: "Not found" });
     const offer = new Offer({ listing: listing._id, farmer: listing.farmer, buyer: req.user.id, price: req.body.price, status: "pending" });
     await offer.save();
@@ -59,6 +60,11 @@ exports.updateOffer = async (req, res) => {
     if (offer.status === "declined") offer.status = "pending";
     offer.price = req.body.price;
     await offer.save();
+    await Notification.create({
+      user: offer.farmer,
+      message: `Offer on your listing was updated from ₹${oldPrice} to ₹${req.body.price}.`,
+      type: "offer",
+    });
     res.json({ message: "Updated", offer });
   } catch (error) {
     res.status(500).json({ message: "Update Error", error: error.message });

@@ -1,21 +1,34 @@
 import React from "react";
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Modal, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
+import i18n from "../config/i18n";
 
 export default function OfferModal({ visible, offer, onClose, onRespond }) {
+  const { t } = useTranslation();
+
   const handleResponse = async (status) => {
     if (!offer) return;
     try {
       const token = await AsyncStorage.getItem("token");
-      await fetch(`http://localhost:5000/api/offers/${offer._id}`, {
+      const response = await fetch(`http://localhost:5000/api/offers/${offer._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "accept-language": i18n.language,
+        },
         body: JSON.stringify({ status }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to update offer status");
+      }
+
       onClose();
       onRespond();
     } catch (e) {
-      console.error("Error:", e);
+      Alert.alert(t("error"), t("offerUpdateFailed"));
     }
   };
 
@@ -23,24 +36,24 @@ export default function OfferModal({ visible, offer, onClose, onRespond }) {
     <Modal visible={visible} animationType="fade" transparent>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Offer</Text>
+          <Text style={styles.modalTitle}>{t("offer")}</Text>
           {offer && (
             <View style={styles.offerDetails}>
-              <Text>Listing: {offer.listing.title}</Text>
-              <Text>Buyer: {offer.buyer.name}</Text>
-              <Text>Price: ${offer.price}</Text>
+              <Text>{`${t("listing")}: ${offer.listing.title}`}</Text>
+              <Text>{`${t("buyer")}: ${offer.buyer.name}`}</Text>
+              <Text>{`${t("price")}: $${offer.price}`}</Text>
             </View>
           )}
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.acceptButton} onPress={() => handleResponse("accepted")}>
-              <Text>Accept</Text>
+              <Text>{t("accept")}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.declineButton} onPress={() => handleResponse("declined")}>
-              <Text>Decline</Text>
+              <Text>{t("decline")}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text>Close</Text>
+            <Text>{t("close")}</Text>
           </TouchableOpacity>
         </View>
       </View>

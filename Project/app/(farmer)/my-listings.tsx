@@ -3,6 +3,9 @@ import { View, Text, FlatList, Image, TouchableOpacity, TextInput, ActivityIndic
 import { apiRequest } from "../../config/api";
 import { useFocusEffect } from "expo-router";
 import EditListingModal from "../../components/editListingModal";
+import { useTranslation } from "react-i18next";
+import i18n from "../../config/i18n";
+import TextToSpeech from '../../components/TextToSpeech';
 
 export default function MyListings() {
   const [listings, setListings] = useState([]);
@@ -12,6 +15,7 @@ export default function MyListings() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingListing, setEditingListing] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchListings();
@@ -24,11 +28,11 @@ export default function MyListings() {
   const fetchListings = async () => {
     try {
       setLoading(true);
-      const response = await apiRequest("/listings/my-listings", "GET");
+      const response = await apiRequest("/listings/my-listings", "GET", null, { "accept-language": i18n.language });
       setListings(response);
       setFilteredListings(response);
     } catch (error) {
-      Alert.alert("Error", "Failed to load listings.");
+      Alert.alert(t("error"), t("listingsLoadFailed"));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -49,12 +53,12 @@ export default function MyListings() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My Listings</Text>
-      <TextInput placeholder="Search" value={searchQuery} onChangeText={filterListings} style={styles.search} />
+      <Text style={styles.title}>{t("myListings")}</Text>
+      <TextInput placeholder={t("search")} value={searchQuery} onChangeText={filterListings} style={styles.search} />
       {loading ? (
         <ActivityIndicator size="large" />
       ) : filteredListings.length === 0 ? (
-        <Text style={styles.empty}>No listings found.</Text>
+        <Text style={styles.empty}>{t("noListingsFound")}</Text>
       ) : (
         <FlatList
           data={filteredListings}
@@ -65,8 +69,9 @@ export default function MyListings() {
               <View style={styles.details}>
                 <Text style={styles.itemTitle}>{item.title}</Text>
                 <Text>{item.description}</Text>
-                <Text>Price: ${item.price}</Text>
-                <Text>Quantity: {item.quantity} Kg</Text>
+                <Text>{`${t("price")}: $${item.price}`}</Text>
+                <Text>{`${t("quantity")}: ${item.quantity} Kg`}</Text>
+                <TextToSpeech text={item.title} />
               </View>
             </TouchableOpacity>
           )}

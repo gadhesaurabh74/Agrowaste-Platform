@@ -3,12 +3,14 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NotificationContext } from "../context/NotificationContext";
 import { useAuth } from "../context/AuthContext";
-import { Ionicons } from "@expo/vector-icons"; // Import Ionicons
+import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 const FarmerHeader = () => {
   const navigation = useNavigation();
   const { notifications } = useContext(NotificationContext);
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -17,10 +19,10 @@ const FarmerHeader = () => {
       <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.iconButton}>
         <Ionicons name="menu-outline" size={24} color="#333" />
       </TouchableOpacity>
-      <Text style={styles.title}>Marketplace</Text>
+      <Text style={styles.title}>{t("marketplace")}</Text>
       <View style={styles.right}>
         <TouchableOpacity onPress={() => navigation.navigate("Notifications")} style={styles.button}>
-          <Text>Notifications ({unreadCount})</Text>
+          <Text>{`${t("notifications")} (${unreadCount})`}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.iconButton}>
           <Ionicons name="person-circle-outline" size={24} color="#333" />
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center", // Align items vertically in the center
+    alignItems: "center",
     backgroundColor: "white",
     padding: 10,
   },
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
   },
   right: {
     flexDirection: "row",
-    alignItems: "center", // Align items vertically in the center
+    alignItems: "center",
   },
   button: {
     padding: 5,

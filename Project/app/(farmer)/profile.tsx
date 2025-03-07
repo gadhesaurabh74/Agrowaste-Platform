@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet, Image, ScrollView, Button } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../context/AuthContext";
+import i18n from "../../config/i18n"; // Import i18n from your config
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 export default function ProfileScreen() {
   const { user, setUser, logout } = useAuth();
@@ -14,6 +16,7 @@ export default function ProfileScreen() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [image, setImage] = useState(null);
+  const { t } = useTranslation(); // Use the translation hook
 
   useEffect(() => {
     fetchProfile();
@@ -23,7 +26,11 @@ export default function ProfileScreen() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/farmer/profile", { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch("http://localhost:5000/api/farmer/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await res.json();
       setProfile(data);
       setName(data.name);
@@ -31,7 +38,11 @@ export default function ProfileScreen() {
       setEmail(data.email);
       setPhone(data.phone);
       setImage(data.profileImage);
-    } catch (e) { Alert.alert("Error", "Failed"); } finally { setLoading(false); }
+    } catch (e) {
+      Alert.alert(t("error"), t("failed")); // Use t for translations
+    } finally {
+      setLoading(false);
+    }
   };
 
   const pickImage = async () => {
@@ -49,42 +60,64 @@ export default function ProfileScreen() {
       form.append("email", email);
       form.append("phone", phone);
       if (image) form.append("profileImage", { uri: image, name: "profile.jpg", type: "image/jpeg" });
-      const res = await fetch("http://localhost:5000/api/farmer/profile", { method: "PUT", headers: { Authorization: `Bearer ${token}` }, body: form });
+      const res = await fetch("http://localhost:5000/api/farmer/profile", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "accept-language": i18n.language, // Use i18n.language
+        },
+        body: form,
+      });
       const data = await res.json();
       setProfile(data);
       setUser(data);
       setEditing(false);
-      Alert.alert("Success", "Updated");
-    } catch (e) { Alert.alert("Error", "Failed"); } finally { setLoading(false); }
+      Alert.alert(t("success"), t("updated")); // Use t for translations
+    } catch (e) {
+      Alert.alert(t("error"), t("failed")); // Use t for translations
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) return <ActivityIndicator size="large" />;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Profile</Text>
+      
+      <Text style={styles.title}>{t("profile")}</Text>
       <View style={styles.imageContainer}>
         <Image source={image ? { uri: image } : ""} style={styles.image} />
-        <TouchableOpacity style={styles.imageButton} onPress={pickImage}><Text>Image</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+          <Text>{t("image")}</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.form}>
-        <Text style={styles.label}>Name</Text>
+        <Text style={styles.label}>{t("name")}</Text>
         <TextInput style={styles.input} value={name} onChangeText={setName} editable={editing} />
-        <Text style={styles.label}>Location</Text>
+        <Text style={styles.label}>{t("location")}</Text>
         <TextInput style={styles.input} value={location} onChangeText={setLocation} editable={editing} />
-        <Text style={styles.label}>Phone</Text>
+        <Text style={styles.label}>{t("phone")}</Text>
         <TextInput style={styles.input} value={phone} onChangeText={setPhone} editable={editing} keyboardType="phone-pad" />
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>{t("email")}</Text>
         <TextInput style={styles.input} value={email} onChangeText={setEmail} editable={editing} keyboardType="email-address" />
         {!editing ? (
-          <TouchableOpacity style={styles.edit} onPress={() => setEditing(true)}><Text>Edit</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.edit} onPress={() => setEditing(true)}>
+            <Text>{t("edit")}</Text>
+          </TouchableOpacity>
         ) : (
           <>
-            <TouchableOpacity style={styles.save} onPress={updateProfile}><Text>Save</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.cancel} onPress={() => setEditing(false)}><Text>Cancel</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.save} onPress={updateProfile}>
+              <Text>{t("save")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancel} onPress={() => setEditing(false)}>
+              <Text>{t("cancel")}</Text>
+            </TouchableOpacity>
           </>
         )}
-        <TouchableOpacity style={styles.logout} onPress={logout}><Text>Logout</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.logout} onPress={logout}>
+          <Text>{t("logout")}</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

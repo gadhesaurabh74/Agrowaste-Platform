@@ -1,14 +1,16 @@
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { useContext } from "react";
 import { NotificationContext } from "../context/NotificationContext";
+import { useTranslation } from "react-i18next";
 
 const NotificationList = () => {
   const { notifications, markAsRead, markAllAsRead, deleteNotification } = useContext(NotificationContext);
+  const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.markAll} onPress={markAllAsRead}>
-        <Text style={styles.markAllText}>Mark All Read</Text>
+        <Text style={styles.markAllText}>{t("markAllRead")}</Text>
       </TouchableOpacity>
       <FlatList
         data={notifications}
@@ -17,9 +19,11 @@ const NotificationList = () => {
           <View style={[styles.item, item.isRead ? styles.read : styles.unread]}>
             <TouchableOpacity style={styles.content} onPress={() => markAsRead(item._id)}>
               <Text style={styles.message}>{item.message}</Text>
-              {!item.isRead && <Text style={styles.unreadText}>Unread</Text>}
+              {!item.isRead && <Text style={styles.unreadText}>{t("unread")}</Text>}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteNotification(item._id)}><Text>Delete</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => deleteNotification(item._id)}>
+              <Text>{t("delete")}</Text>
+            </TouchableOpacity>
           </View>
         )}
       />

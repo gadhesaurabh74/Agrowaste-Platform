@@ -2,6 +2,8 @@ import { useState } from "react";
 import { View, TextInput, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
+import i18n from "../../config/i18n";
 
 export default function CreateListing() {
   const [title, setTitle] = useState("");
@@ -10,6 +12,7 @@ export default function CreateListing() {
   const [quantity, setQuantity] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState(null);
+  const { t } = useTranslation();
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, quality: 1 });
@@ -18,7 +21,7 @@ export default function CreateListing() {
 
   const handleCreateListing = async () => {
     if (!title || !description || !price || !location || !quantity || !image) {
-      Alert.alert("Error", "Required");
+      Alert.alert(t("error"), t("required"));
       return;
     }
 
@@ -34,12 +37,16 @@ export default function CreateListing() {
       const token = await AsyncStorage.getItem("token");
       const response = await fetch("http://localhost:5000/api/listings", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+          "accept-language": i18n.language,
+        },
         body: formData,
       });
 
       if (!response.ok) throw new Error("Failed");
-      Alert.alert("Success", "Created");
+      Alert.alert(t("success"), t("created"));
       setTitle("");
       setDescription("");
       setPrice("");
@@ -47,23 +54,23 @@ export default function CreateListing() {
       setQuantity("");
       setImage(null);
     } catch (error) {
-      Alert.alert("Error", "Failed");
+      Alert.alert(t("error"), t("failed"));
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create</Text>
-      <TextInput style={styles.input} placeholder="Title" value={title} onChangeText={setTitle} />
-      <TextInput style={styles.input} placeholder="Description" value={description} onChangeText={setDescription} multiline />
-      <TextInput style={styles.input} placeholder="Price" value={price} onChangeText={setPrice} keyboardType="numeric" />
-      <TextInput style={styles.input} placeholder="Quantity" value={quantity} onChangeText={setQuantity} keyboardType="numeric" />
-      <TextInput style={styles.input} placeholder="Location" value={location} onChangeText={setLocation} />
+      <Text style={styles.title}>{t("create")}</Text>
+      <TextInput style={styles.input} placeholder={t("title")} value={title} onChangeText={setTitle} />
+      <TextInput style={styles.input} placeholder={t("description")} value={description} onChangeText={setDescription} multiline />
+      <TextInput style={styles.input} placeholder={t("price")} value={price} onChangeText={setPrice} keyboardType="numeric" />
+      <TextInput style={styles.input} placeholder={t("quantity")} value={quantity} onChangeText={setQuantity} keyboardType="numeric" />
+      <TextInput style={styles.input} placeholder={t("location")} value={location} onChangeText={setLocation} />
       <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
-        <Text>Pick Image</Text>
+        <Text>{t("pickImage")}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleCreateListing}>
-        <Text style={styles.buttonText}>Create</Text>
+        <Text style={styles.buttonText}>{t("create")}</Text>
       </TouchableOpacity>
     </View>
   );

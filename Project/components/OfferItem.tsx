@@ -1,15 +1,18 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function OfferItem({ offer, onPress }) {
+  const { t } = useTranslation();
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.item}>
       {offer.listing.image && <Image source={{ uri: offer.listing.image }} style={styles.image} />}
       <View style={styles.info}>
         <Text style={styles.title}>{offer.listing.title}</Text>
-        <Text>Buyer: {offer.buyer.name}</Text>
-        <Text>Offer: ${offer.price}</Text>
-        <Text style={[styles.status, styles[offer.status]]}>{offer.status}</Text>
+        <Text>{`${t("buyer")}: ${offer.buyer.name}`}</Text>
+        <Text>{`${t("offer")}: $${offer.price}`}</Text>
+        <Text style={[styles.status, styles[offer.status]]}>{t(offer.status.toLowerCase())}</Text>
       </View>
     </TouchableOpacity>
   );

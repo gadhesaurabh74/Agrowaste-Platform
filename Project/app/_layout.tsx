@@ -2,6 +2,8 @@ import { Stack } from "expo-router";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { NotificationProvider } from "../context/NotificationContext";
 import { ActivityIndicator, View } from "react-native";
+import i18n from '../config/i18n'; // Import i18n config
+import { I18nextProvider } from 'react-i18next';
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth();
@@ -27,10 +29,12 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
 
 export default function Layout() {
   return (
+    <I18nextProvider i18n={i18n}>
     <AuthProvider>
       <NotificationProvider> 
         <AuthWrapper />
       </NotificationProvider>
     </AuthProvider>
+    </I18nextProvider>
   );
 }
