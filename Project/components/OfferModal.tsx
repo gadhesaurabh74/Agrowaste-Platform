@@ -3,15 +3,17 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet, Alert } from "react-na
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import i18n from "../config/i18n";
+import { useAuth } from "../context/AuthContext";
 
 export default function OfferModal({ visible, offer, onClose, onRespond }) {
   const { t } = useTranslation();
+  const { API_BASE_URL } = useAuth();
 
   const handleResponse = async (status) => {
     if (!offer) return;
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/offers/${offer._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/offers/${offer._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

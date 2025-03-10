@@ -5,6 +5,7 @@ import OfferItem from "../../components/OfferItem";
 import OfferModal from "../../components/OfferModal";
 import { useTranslation } from "react-i18next";
 import i18n from "../../config/i18n";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ManageOffers() {
   const [offers, setOffers] = useState([]);
@@ -12,6 +13,7 @@ export default function ManageOffers() {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+  const { API_BASE_URL } = useAuth();
 
   useEffect(() => {
     fetchOffers();
@@ -21,7 +23,7 @@ export default function ManageOffers() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/offers/farmer", {
+      const res = await fetch(`${API_BASE_URL}/api/offers/farmer`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "accept-language": i18n.language,

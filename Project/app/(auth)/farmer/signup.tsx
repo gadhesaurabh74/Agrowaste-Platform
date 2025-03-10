@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function FarmerSignup() {
   const router = useRouter();
@@ -9,10 +10,11 @@ export default function FarmerSignup() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const { API_BASE_URL } = useAuth();
 
   const handleSignup = async () => {
     try {
-      const response = await fetch("http://localhost:5000/auth/farmer/signup", {
+      const response = await fetch(`${API_BASE_URL}/auth/farmer/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, phone }),

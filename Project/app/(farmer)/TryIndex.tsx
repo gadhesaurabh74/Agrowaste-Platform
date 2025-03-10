@@ -8,7 +8,7 @@ import TextToSpeech from '../../components/TextToSpeech';
 import { Feather, MaterialCommunityIcons, FontAwesome5, Ionicons } from '@expo/vector-icons';
 
 export default function FarmerDashboard() {
-  const { user } = useAuth();
+  const { user, API_BASE_URL } = useAuth();
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ export default function FarmerDashboard() {
   const fetchDashboardStats = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/farmer/profile/dashboard", {
+      const response = await fetch(`${API_BASE_URL}/api/farmer/profile/dashboard`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

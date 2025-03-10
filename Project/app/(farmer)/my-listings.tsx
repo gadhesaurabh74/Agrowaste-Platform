@@ -28,7 +28,9 @@ export default function MyListings() {
   const fetchListings = async () => {
     try {
       setLoading(true);
+      console.log("before");
       const response = await apiRequest("/listings/my-listings", "GET", null, { "accept-language": i18n.language });
+      console.log("myli: ",{...response});
       setListings(response);
       setFilteredListings(response);
     } catch (error) {

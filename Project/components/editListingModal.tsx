@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, Image, Modal, Alert, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../context/AuthContext";
 
 export default function EditListingModal({ visible, listing, onClose, onUpdate }) {
   if (!listing) return null;
@@ -12,6 +13,7 @@ export default function EditListingModal({ visible, listing, onClose, onUpdate }
   const [quantity, setQuantity] = useState(listing.quantity?.toString() || '');
   const [image, setImage] = useState(listing.image);
   const [imageChanged, setImageChanged] = useState(false);
+  const { API_BASE_URL } = useAuth();
 
   const updateListing = async () => {
     try {
@@ -23,7 +25,7 @@ export default function EditListingModal({ visible, listing, onClose, onUpdate }
       if (imageChanged) form.append("image", { uri: image, type: "image/jpeg", name: "listing.jpg" });
 
       const token = await AsyncStorage.getItem("token");
-      await fetch(`http://localhost:5000/api/listings/${listing._id}`, { method: "PUT", headers: { Authorization: `Bearer ${token}` }, body: form });
+      await fetch(`${API_BASE_URL}/api/listings/${listing._id}`, { method: "PUT", headers: { Authorization: `Bearer ${token}` }, body: form });
 
       Alert.alert("Updated");
       onClose();
@@ -37,7 +39,7 @@ export default function EditListingModal({ visible, listing, onClose, onUpdate }
       { text: "Yes", style: "destructive", onPress: async () => {
           try {
             const token = await AsyncStorage.getItem("token");
-            await fetch(`http://localhost:5000/api/listings/${listing._id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+            await fetch(`${API_BASE_URL}/api/listings/${listing._id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
             Alert.alert("Deleted");
             onClose();
             onUpdate();

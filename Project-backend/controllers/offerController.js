@@ -54,17 +54,20 @@ exports.getMyOffers = async (req, res) => {
 exports.updateOffer = async (req, res) => {
   try {
     const offer = await Offer.findById(req.params.offerId);
+    const oldPrice=offer.price
     if (!offer) return res.status(404).json({ message: "Not found" });
     if (offer.buyer.toString() !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
     if (offer.status === "accepted") return res.status(400).json({ message: "Cannot update accepted" });
     if (offer.status === "declined") offer.status = "pending";
     offer.price = req.body.price;
     await offer.save();
+
     await Notification.create({
       user: offer.farmer,
       message: `Offer on your listing was updated from ₹${oldPrice} to ₹${req.body.price}.`,
       type: "offer",
     });
+    
     res.json({ message: "Updated", offer });
   } catch (error) {
     res.status(500).json({ message: "Update Error", error: error.message });

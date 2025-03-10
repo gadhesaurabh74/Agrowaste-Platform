@@ -9,9 +9,11 @@ import {
   StyleSheet,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../context/AuthContext";
 
 export default function OfferModal({ visible, onClose, listing }) {
   const [offerPrice, setOfferPrice] = useState("");
+  const { API_BASE_URL } = useAuth();
 
   const makeOffer = async () => {
     if (!offerPrice.trim()) {
@@ -21,7 +23,7 @@ export default function OfferModal({ visible, onClose, listing }) {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch("http://localhost:5000/api/offers", {
+      const response = await fetch(`${API_BASE_URL}/api/offers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

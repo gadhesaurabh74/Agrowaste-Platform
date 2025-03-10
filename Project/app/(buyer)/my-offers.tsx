@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import OfferModal from "../../components/BuyerOfferModal";
+import { useAuth } from "../../context/AuthContext";
 
 export default function MyOffers() {
   const [offers, setOffers] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const { API_BASE_URL } = useAuth();
 
   useEffect(() => {
     fetchOffers();
@@ -15,7 +17,7 @@ export default function MyOffers() {
   const fetchOffers = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/offers/my", { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/api/offers/my`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       setOffers(data);
     } catch (e) { console.error("Error:", e); }

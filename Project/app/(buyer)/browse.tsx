@@ -4,7 +4,7 @@ import OfferModal from "../../components/BrowseModal";
 import { useAuth } from "../../context/AuthContext";
 
 export default function BrowseListings() {
-  const { user } = useAuth();
+  const { user, API_BASE_URL } = useAuth();
   const [listings, setListings] = useState([]);
   const [filteredListings, setFilteredListings] = useState([]);
   const [selectedListing, setSelectedListing] = useState(null);
@@ -22,7 +22,7 @@ export default function BrowseListings() {
 
   const fetchListings = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/listings");
+      const res = await fetch(`${API_BASE_URL}/api/listings`);
       const data = await res.json();
       setListings(data);
     } catch (e) {

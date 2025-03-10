@@ -4,6 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import i18n from "../../config/i18n";
+import { useAuth } from "../../context/AuthContext";
 
 export default function CreateListing() {
   const [title, setTitle] = useState("");
@@ -13,6 +14,7 @@ export default function CreateListing() {
   const [location, setLocation] = useState("");
   const [image, setImage] = useState(null);
   const { t } = useTranslation();
+  const { API_BASE_URL } = useAuth();
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, quality: 1 });
@@ -35,7 +37,7 @@ export default function CreateListing() {
       formData.append("quantity", quantity);
 
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/listings", {
+      const response = await fetch(`${API_BASE_URL}/api/listings`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

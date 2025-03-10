@@ -4,10 +4,13 @@ import {
   StyleSheet, Alert, ActivityIndicator 
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../context/AuthContext";
 
 const OfferModal = ({ visible, onClose, offer, fetchOffers }) => {
   const [newPrice, setNewPrice] = useState("");
   const [loading, setLoading] = useState(false);
+  const { API_BASE_URL } = useAuth();
+  console.log("base url: ",API_BASE_URL);
 
   useEffect(() => {
     if (offer) {
@@ -25,7 +28,7 @@ const OfferModal = ({ visible, onClose, offer, fetchOffers }) => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/offers/${offer._id}/update`, {
+      const response = await fetch(`${API_BASE_URL}/api/offers/${offer._id}/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -33,6 +36,7 @@ const OfferModal = ({ visible, onClose, offer, fetchOffers }) => {
         },
         body: JSON.stringify({ price: parseFloat(newPrice) }),
       });
+      console.log("res bom: ",{...response});
 
       if (!response.ok) {
         throw new Error("Failed to update offer");
@@ -59,7 +63,7 @@ const OfferModal = ({ visible, onClose, offer, fetchOffers }) => {
           try {
             setLoading(true);
             const token = await AsyncStorage.getItem("token");
-            const response = await fetch(`http://localhost:5000/api/offers/${offer._id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/offers/${offer._id}`, {
               method: "DELETE",
               headers: { Authorization: `Bearer ${token}` },
             });

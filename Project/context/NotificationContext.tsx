@@ -3,17 +3,17 @@ import { useAuth } from "./AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const NotificationContext = createContext();
-const API_BASE_URL = "http://localhost:5000/api";
+
 
 export const NotificationProvider = ({ children }) => {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
-
+  const { API_BASE_URL } = useAuth();
   // Fetch notifications
   const fetchNotifications = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const res = await fetch(`${API_BASE_URL}/notifications`, {
+      const res = await fetch(`${API_BASE_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -27,7 +27,7 @@ export const NotificationProvider = ({ children }) => {
   const markAsRead = async (id) => {
     try {
       const token = await AsyncStorage.getItem("token");
-      await fetch(`${API_BASE_URL}/notifications/${id}`, {
+      await fetch(`${API_BASE_URL}/api/notifications/${id}`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -43,7 +43,7 @@ export const NotificationProvider = ({ children }) => {
   const markAllAsRead = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-      await fetch(`${API_BASE_URL}/notifications`, {
+      await fetch(`${API_BASE_URL}/api/notifications`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -57,7 +57,7 @@ export const NotificationProvider = ({ children }) => {
   const deleteNotification = async (id) => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const res = await fetch(`${API_BASE_URL}/notifications/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/notifications/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

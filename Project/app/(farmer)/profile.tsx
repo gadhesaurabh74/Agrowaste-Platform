@@ -7,7 +7,7 @@ import i18n from "../../config/i18n"; // Import i18n from your config
 import { useTranslation } from "react-i18next"; // Import useTranslation
 
 export default function ProfileScreen() {
-  const { user, setUser, logout } = useAuth();
+  const { user, setUser, logout, API_BASE_URL } = useAuth();
   const [profile, setProfile] = useState({});
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -26,7 +26,7 @@ export default function ProfileScreen() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/farmer/profile", {
+      const res = await fetch(`${API_BASE_URL}/api/farmer/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -60,7 +60,7 @@ export default function ProfileScreen() {
       form.append("email", email);
       form.append("phone", phone);
       if (image) form.append("profileImage", { uri: image, name: "profile.jpg", type: "image/jpeg" });
-      const res = await fetch("http://localhost:5000/api/farmer/profile", {
+      const res = await fetch(`${API_BASE_URL}/api/farmer/profile`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

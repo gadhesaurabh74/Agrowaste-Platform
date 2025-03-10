@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function IndustryProfile() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, API_BASE_URL } = useAuth();
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [location, setLocation] = useState(user?.location || "");
@@ -23,7 +23,7 @@ export default function IndustryProfile() {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/buyer/profile", { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/api/buyer/profile`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       setName(data.name);
       setPhone(data.phone);
@@ -56,7 +56,7 @@ export default function IndustryProfile() {
       if (image && image !== user?.profileImage) {
         form.append("profileImage", { uri: image, name: "profile.jpg", type: "image/jpeg" });
       }
-      const res = await fetch("http://localhost:5000/api/buyer/profile", { method: "PUT", headers: { Authorization: `Bearer ${token}` }, body: form });
+      const res = await fetch(`${API_BASE_URL}/api/buyer/profile`, { method: "PUT", headers: { Authorization: `Bearer ${token}` }, body: form });
       const data = await res.json();
       setUser(data);
       setOriginal(data);

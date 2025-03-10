@@ -6,12 +6,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // Create Auth Context
 const AuthContext = createContext(null);
 
-const API_BASE_URL="http://localhost:5000"
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
+  const IP_ADDRESS="localhost";
+  const API_BASE_URL=`http://${IP_ADDRESS}:5000`;
+  //console.log("base: ",API_BASE_URL);
   // Helper function for API requests
   const fetchAPI = async (endpoint, method = "GET", body = null, auth = true) => {
     try {
@@ -102,7 +104,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, loading, login, logout, API_BASE_URL }}>
       {children}
     </AuthContext.Provider>
   );
