@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
         console.log("token there in authContext");
         if (token) {
           const userData = await fetchAPI("/auth/me", "GET");
-          setUser({...userData._doc,role:userData.role});
+          setUser({...userData,role:userData.role});
           console.log("data in authcon",{...user});
 
           // Redirect user based on role
