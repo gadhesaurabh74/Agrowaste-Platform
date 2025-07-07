@@ -1,23 +1,18 @@
-Here’s a complete and professional `README.md` for your **AgroWaste Portal** project, assuming it's organized into `frontend/` and `backend/` folders and uses Expo CLI + Express with MongoDB and Cloudinary.
-
----
-
-```md
 # 🌿 AgroWaste Portal
 
-An AI-powered mobile application that connects farmers with industries by enabling them to sell agricultural waste directly. Built with **React Native (Expo CLI)** for the frontend and **Node.js + Express** for the backend. The app supports **multilingual interfaces**, **text-to-speech accessibility**, **real-time price negotiation**, and a built-in **Gemini chatbot** for agro-waste guidance.
+An AI-powered mobile application that connects farmers with industries by enabling them to sell agricultural waste directly.  
+Built with **React Native (Expo CLI)** for the frontend and **Node.js + Express** for the backend.  
+The app supports **multilingual interfaces**, **text-to-speech accessibility**, **real-time price negotiation**, and a built-in **Gemini chatbot** for agro-waste guidance.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-
 agrowaste-portal/
 ├── frontend/          # React Native app (Expo CLI)
 └── backend/           # Node.js + Express server
-
-````
+```
 
 ---
 
@@ -35,9 +30,10 @@ agrowaste-portal/
 ### 🖥️ Backend Setup
 
 1. Navigate to the backend directory:
+
    ```bash
    cd backend
-````
+   ```
 
 2. Install dependencies:
 
@@ -45,7 +41,7 @@ agrowaste-portal/
    npm install
    ```
 
-3. Create a `.env` file and configure:
+3. Create a `.env` file and add:
 
    ```env
    PORT=5000
@@ -84,20 +80,20 @@ agrowaste-portal/
    expo start
    ```
 
-4. Scan the QR code using the Expo Go app (Android/iOS) to view on your device.
+4. Scan the QR code using the Expo Go app (Android/iOS) to view the app.
 
 ---
 
 ## 🔑 Features
 
-* 🧑‍🌾 **Waste Listings**: Farmers can post images, prices, and details of agro-waste
-* 💬 **Live Price Negotiation**: Buyers and sellers bargain in real time via WebSockets
-* 🤖 **AI Chatbot**: Powered by Gemini API for agro-advice, support, and tutorials
-* 🌐 **Multilingual UI**: Supports regional languages (Hindi, Marathi, Telugu, etc.)
-* 🔊 **Text-to-Speech**: Reads all content aloud for low-literacy users
-* 🎥 **Tutorial Section**: Step-by-step guides and explainer videos in multiple languages
-* ☁️ **Image Upload**: Stored securely using Cloudinary CDN
-* 🔐 **JWT Authentication**: Secures API and user access (farmers vs buyers)
+- 🧑‍🌾 **Waste Listings** – Farmers post waste details with price and images
+- 💬 **Live Price Negotiation** – Real-time chat using Socket.IO
+- 🤖 **AI Chatbot** – Gemini API provides advice and tutorials
+- 🌐 **Multilingual UI** – Supports Hindi, Marathi, Telugu, and more
+- 🔊 **Text-to-Speech** – Content is read aloud for accessibility
+- 🎥 **Tutorials** – Step-by-step explainer videos in multiple languages
+- ☁️ **Image Upload** – Secure storage with Cloudinary
+- 🔐 **JWT Authentication** – Role-based access for farmers and buyers
 
 ---
 
@@ -119,15 +115,15 @@ agrowaste-portal/
 
 ## 📷 Screenshots
 
-Demo video is provided above
+Demo video is provided above.
 
 ---
 
 ## ✨ Future Improvements
 
-* Add in-app push notifications
-* Integrate voice input (speech-to-text)
-* Admin dashboard for platform monitoring
-* Offline support with local database
+- Add in-app push notifications
+- Integrate voice input (speech-to-text)
+- Admin dashboard for platform monitoring
+- Offline support with local database
 
 ---
